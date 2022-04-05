@@ -8,6 +8,7 @@ import withBookstoreService from '../hoc';
 import { booksLoaded } from '../../actions';
 import { compose } from '../../utils';
 import './book-list.css';
+import Spinner from '../spinner/spinner';
 
 
 
@@ -29,7 +30,12 @@ class BookList extends Component {
 
 
   render() {
-    const { books } = this.props;
+    const { books, loading } = this.props;
+    if (loading) {
+      return <Spinner/>
+    }
+
+
     //получаем из Redux Store список книг и отрисовываем его
     return (
       <ul className='book-list'>
@@ -45,8 +51,8 @@ class BookList extends Component {
   }
 }
 
-const mapStateToProps = ({ books }) => { //state
-  return { books }; //books: state.books
+const mapStateToProps = ({ books, loading }) => { //state
+  return { books, loading }; //books: state.books
 };
 
 const mapDispatchToProps = {
