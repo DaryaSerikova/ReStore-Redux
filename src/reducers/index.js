@@ -9,6 +9,11 @@ const initialState = {
 const reducer = (state = initialState, action) => {
 
   switch (action.type) {
+    case 'BOOKS_REQUESTED':
+      return {
+        books: [],
+        loading: true
+      };
     case 'BOOKS_LOADED':
       return {
         books: action.payload,
@@ -17,8 +22,6 @@ const reducer = (state = initialState, action) => {
       default: 
       return state;
   }
-
-  return state;
 };
 
 export default reducer;
