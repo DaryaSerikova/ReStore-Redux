@@ -15,17 +15,22 @@ class BookList extends Component {
 
   componentDidMount() {
     //1.receive data
-    const { bookstoreService } = this.props;
-    const data = bookstoreService.getBooks();
-    console.log(data);
+    const { bookstoreService, booksLoaded } = this.props; // Получаем bookstoreService из контекста
+    bookstoreService.getBooks() //получаем данные
+      .then((data) => booksLoaded(data)); 
 
     //2.dispatch action to store
-    this.props.booksLoaded(data);
+    // this.props.booksLoaded(data); 
+    // когда есть данные, 
+    // вызываем booksLoaded(data) - action creator, 
+    // он вызывает dispatch и передает данные(список книг) 
+    // в Redux Store
   }
 
 
   render() {
     const { books } = this.props;
+    //получаем из Redux Store список книг и отрисовываем его
     return (
       <ul className='book-list'>
         {
