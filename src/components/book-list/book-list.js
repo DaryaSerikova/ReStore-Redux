@@ -16,26 +16,27 @@ import ErrorIndicator from '../error-indicator';
 class BookList extends Component {
 
   componentDidMount() {
-    //1.receive data
-    const { 
-      bookstoreService, 
-      booksLoaded, 
-      booksRequested, 
-      booksError } = this.props; // Получаем bookstoreService из контекста
+    this.props.fetchBooks();
+    // //1.receive data
+    // const { 
+    //   bookstoreService, 
+    //   booksLoaded, 
+    //   booksRequested, 
+    //   booksError } = this.props; // Получаем bookstoreService из контекста
     
-    booksRequested();//spinner при каждой загрузке данных
+    // booksRequested();//spinner при каждой загрузке данных
 
-    bookstoreService.getBooks() //получаем данные
-      .then((data) => booksLoaded(data))
-      .catch((err) => booksError(err)); 
+    // bookstoreService.getBooks() //получаем данные
+    //   .then((data) => booksLoaded(data))
+    //   .catch((err) => booksError(err)); 
 
 
-    //2.dispatch action to store
-    // this.props.booksLoaded(data); 
-    // когда есть данные, 
-    // вызываем booksLoaded(data) - action creator, 
-    // он вызывает dispatch и передает данные(список книг) 
-    // в Redux Store
+    // //2.dispatch action to store
+    // // this.props.booksLoaded(data); 
+    // // когда есть данные, 
+    // // вызываем booksLoaded(data) - action creator, 
+    // // он вызывает dispatch и передает данные(список книг) 
+    // // в Redux Store
   }
 
 
@@ -69,11 +70,25 @@ const mapStateToProps = ({ books, loading, error }) => { //state
   return { books, loading, error }; //books: state.books
 };
 
-const mapDispatchToProps = {
-   booksLoaded,
-   booksRequested,
-   booksError 
+const mapDispatchToProps = (dispatch, ownProps) => {
+
+  const { bookstoreService } = ownProps;
+
+  return {
+    fetchBooks: () => {
+      dispatch(booksRequested());//spinner при каждой загрузке данных
+      bookstoreService.getBooks() //получаем данные
+        .then((data) => dispatch(booksLoaded(data)))
+        .catch((err) => dispatch(booksError(err))); 
+    }
+  }
 };
+
+// const mapDispatchToProps = {
+//    booksLoaded,
+//    booksRequested,
+//    booksError 
+// };
 
 // const mapDispatchToProps =  (dispatch) => {
 //   return bindActionCreators({
