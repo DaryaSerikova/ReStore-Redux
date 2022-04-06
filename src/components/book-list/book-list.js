@@ -12,8 +12,21 @@ import Spinner from '../spinner/spinner';
 import ErrorIndicator from '../error-indicator';
 
 
+const BookList = ({books}) => {
+  return (
+    <ul className='book-list'>
+      {
+        books.map((book) => {
+          return (
+            <li key={book.id}><BookListItem book={book}/></li>
+          )
+        })
+      }
+    </ul>
+  );
+};
 
-class BookList extends Component {
+class BookListContainer extends Component {
 
   componentDidMount() {
     this.props.fetchBooks();
@@ -50,21 +63,11 @@ class BookList extends Component {
       return <ErrorIndicator />
     }
 
-
     //получаем из Redux Store список книг и отрисовываем его
-    return (
-      <ul className='book-list'>
-        {
-          books.map((book) => {
-            return (
-              <li key={book.id}><BookListItem book={book}/></li>
-            )
-          })
-        }
-      </ul>
-    );
+    return <BookList books={books}/>
   }
 }
+
 
 const mapStateToProps = ({ books, loading, error }) => { //state
   return { books, loading, error }; //books: state.books
@@ -104,7 +107,7 @@ const mapDispatchToProps = (dispatch, { bookstoreService }) => {//(dispatch, own
 export default compose(
   withBookstoreService(),
   connect(mapStateToProps, mapDispatchToProps)
-)(BookList);
+)(BookListContainer);
 
 // export default withBookstoreService()(
 //   connect(mapStateToProps, mapDispatchToProps)(BookList));
