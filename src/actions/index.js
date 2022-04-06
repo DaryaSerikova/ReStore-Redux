@@ -31,11 +31,6 @@ const fetchBooks = (bookstoreService, dispatch) => () => { // это не action
     .catch((err) => dispatch(booksError(err))); 
 }
 
-// export { // они используются все в fetchBooks
-//   booksLoaded,
-//   booksRequested,
-//   booksError
-// };
 
 export {
   fetchBooks
