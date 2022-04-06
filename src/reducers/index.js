@@ -1,6 +1,4 @@
 
-
-
 const initialState = {
   books: [],
   loading: true,
