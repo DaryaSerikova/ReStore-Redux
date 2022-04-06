@@ -22,6 +22,14 @@ const booksError = (error) => {
   };//(произошла ошибка: в payload передается объект Error)
 };
 
+export const bookAddedToCart = (bookId) => {
+  return {
+    type: 'BOOK_ADDED_TO_CART',
+    payload: bookId
+  };
+};
+
+
 const fetchBooks = (bookstoreService, dispatch) => () => { // это не action creator
   //двойная ф-ция () => () => чтобы можно было вызвать 
   // ф-цию без параметров. Они будут закрыты здесь
