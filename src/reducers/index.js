@@ -5,39 +5,34 @@ const initialState = {
   books: [],
   loading: true,
   error: null,
-  cartItems: [
-    // {
-    //   id: 1,
-    //   name: 'Book 1',
-    //   count: 3,
-    //   total: 150
-    // },
-    // {
-    //   id: 2,
-    //   name: 'Book 2',
-    //   count: 2,
-    //   total: 70
-    // }
-  ],
+  cartItems: [],
   orderTotal: 220
 };
 
-const updateCartItems = (cartItems, item, idx) => {
-  if(idx === -1){ //если это новый элемент
+const updateCartItems = (cartItems, item, idx) => { //обновляет массив
+  
+  if (item.count === 0) {//удаление элемента
+    return [
+      ...cartItems.slice(0, idx),
+      ...cartItems.slice(idx + 1)
+    ];
+  }
+  
+  if (idx === -1){ //если это новый элемент //добавление элемента
     return [
       ...cartItems,
       item
     ]
   }
 
-  return [
+  return [//обновление элемента
     ...cartItems.slice(0, idx),
     item,
     ...cartItems.slice(idx + 1)
   ]
 }
 
-const updateCartItem = (book, item = {}) => {
+const updateCartItem = (book, item = {}, quantity) => {
 
   const { 
     id = book.id, 
@@ -48,9 +43,25 @@ const updateCartItem = (book, item = {}) => {
     return {
       id,
       title,
-      count: count + 1,
-      total: total + book.price
+      count: count + quantity,
+      total: total + quantity*book.price
     };
+};
+
+const updateOrder = (state, bookId, quantity) => {
+
+  const { books, cartItems } = state;
+
+  // const bookId = action.payload;
+  const book = books.find((book) => book.id === bookId);
+  const itemIndex = cartItems.findIndex(({ id }) => id === bookId);
+  const item = cartItems[itemIndex]; //if itemIndex===-1, тогда item===undefined
+  
+  const newItem = updateCartItem(book, item, quantity);
+  return {
+    ...state,
+    cartItems: updateCartItems(cartItems, newItem, itemIndex)
+  };
 };
 
 
@@ -82,18 +93,14 @@ const reducer = (state = initialState, action) => {
       };
 
     case 'BOOK_ADDED_TO_CART':
-      const bookId = action.payload;
-      const book = state.books.find((book) => book.id === bookId);
-      const itemIndex = state.cartItems.findIndex(({id}) => id === bookId);
-      const item = state.cartItems[itemIndex]; //if itemIndex===-1, тогда item===undefined
-  
+      return updateOrder(state, action.payload, 1);
 
-      const newItem = updateCartItem(book, item);
+    case 'BOOK_REMOVED_FROM_CART':
+      return updateOrder(state, action.payload, -1);
 
-      return {
-        ...state,
-        cartItems: updateCartItems(state.cartItems, newItem, itemIndex)
-      };
+    case 'ALL_BOOKS_REMOVED_FROM_CART':
+      const item = state.cartItems.find(({id}) => id === action.payload);
+      return updateOrder(state, action.payload, -item.count); // сбиваем количество до нуля
 
 
       default: 
