@@ -74,7 +74,7 @@ class BookListContainer extends Component {
 }
 
 
-const mapStateToProps = ({ books, loading, error }) => { //state
+const mapStateToProps = ({ bookList: { books, loading, error }}) => { //state
   return { books, loading, error }; //books: state.books
 };
 
@@ -90,6 +90,12 @@ const mapDispatchToProps = (dispatch, { bookstoreService }) => {//(dispatch, own
     // }
   };
 };
+
+export default compose(
+  withBookstoreService(),
+  connect(mapStateToProps, mapDispatchToProps)
+)(BookListContainer);
+
 
 // const mapDispatchToProps = {
 //    booksLoaded,
@@ -113,10 +119,6 @@ const mapDispatchToProps = (dispatch, { bookstoreService }) => {//(dispatch, own
 //   // };
 // };
 
-export default compose(
-  withBookstoreService(),
-  connect(mapStateToProps, mapDispatchToProps)
-)(BookListContainer);
 
 // export default withBookstoreService()(
 //   connect(mapStateToProps, mapDispatchToProps)(BookList));
