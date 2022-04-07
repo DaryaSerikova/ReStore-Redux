@@ -1,27 +1,42 @@
 import { createStore, applyMiddleware } from 'redux';
 import reducer from './reducers';
-
+import thunkMiddleware  from 'redux-thunk';
 
 //MIDDLEWARE 
 //Мы не получаем полный доступ к store. Доступ только к двум ф-циям:
 // { getState, dispatch }
-// const logMiddleware = (store) => (dispatch) => (action) => { // часто dispatch это next (в документации)
-//   console.log(action.type);
-//   return dispatch(action);
+
+const logMiddleware = (store) => (dispatch) => (action) => { // часто dispatch это next (в документации)
+  console.log(action.type);
+  return dispatch(action);
+};
+
+const stringMiddleware = (store) => (dispatch) => (action) => {
+    if (typeof action === 'string') {
+    return dispatch({
+      type: action
+    });
+  }
+
+  return dispatch(action);
+};
+
+const store = createStore(reducer, applyMiddleware(
+  thunkMiddleware, stringMiddleware, logMiddleware)); // порядок важен
+
+// const myAction = (dispatch) => {
+//   setTimeout(() => dispatch({
+//     type: 'DELAYED_ACTION'
+//   }), 2000);
 // };
 
-// const stringMiddleware = (store) => (dispatch) => (action) => {
-//     if (typeof action === 'string') {
-//     return dispatch({
-//       type: action
-//     });
-//   }
+const delayedActionCreator = (timeout) => (dispatch) => {
+  setTimeout(() => dispatch({
+    type: 'DELAYED_ACTION'
+  }), timeout);
+};
 
-//   return dispatch(action);
-// };
-
-// const store = createStore(reducer, applyMiddleware(
-//   stringMiddleware, logMiddleware)); // порядок важен
+store.dispatch(delayedActionCreator(3000));//myAction
 
 // ---------------------------------------------------------
 
@@ -60,6 +75,6 @@ import reducer from './reducers';
 
 
 
-const store = createStore(reducer);
+// const store = createStore(reducer); //если без исправлений dispatch или store 
 
 export default store;

@@ -44,7 +44,7 @@ export const allBooksRemovedFromCart = (bookId) => {
 };
 
 
-const fetchBooks = (bookstoreService, dispatch) => () => { // это не action creator
+const fetchBooksOld = (bookstoreService, dispatch) => () => { // это не action creator
   //двойная ф-ция () => () => чтобы можно было вызвать 
   // ф-цию без параметров. Они будут закрыты здесь
   dispatch(booksRequested());//spinner при каждой загрузке данных
@@ -53,6 +53,13 @@ const fetchBooks = (bookstoreService, dispatch) => () => { // это не action
     .catch((err) => dispatch(booksError(err))); 
 }
 
+const fetchBooks = (bookstoreService) => () => (dispatch) => {
+  dispatch(booksRequested());//spinner при каждой загрузке данных
+  bookstoreService.getBooks() //получаем данные
+    .then((data) => dispatch(booksLoaded(data)))
+    .catch((err) => dispatch(booksError(err))); 
+};
+ 
 // export { // они используются все в fetchBooks
 //   booksLoaded,
 //   booksRequested,

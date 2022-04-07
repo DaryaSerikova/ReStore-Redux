@@ -83,8 +83,11 @@ const mapDispatchToProps = (dispatch, { bookstoreService }) => {//(dispatch, own
   // const { bookstoreService } = ownProps;
 
   return {
-    fetchBooks: fetchBooks(bookstoreService, dispatch),
+    // fetchBooks: fetchBooks(bookstoreService, dispatch),
+    fetchBooks: () => dispatch(fetchBooks(bookstoreService)()),
     onAddedToCart: (id) => dispatch(bookAddedToCart(id))
+
+
     // onAddedToCart: (id) => {
     //   console.log('Added to cart', id);
     // }
